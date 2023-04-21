@@ -7,13 +7,15 @@ class ResidualBlock(nn.Module):
         self,
         num_channels: int,
         output_channels: int,
-        is_identity=True,
-        stride=1,
+        is_plain=False,
+        stride=2,
         device="cpu",
     ):
         super(ResidualBlock, self).__init__()
         self.device = device
-        self.is_identity = is_identity
+        self.is_plain = is_plain
+        self.num_channels = num_channels
+        self.output_channels = output_channels
 
         self.conv1 = nn.Conv2d(
             num_channels,
@@ -27,7 +29,8 @@ class ResidualBlock(nn.Module):
             num_channels, num_channels, kernel_size=3, padding=1, device=self.device
         )
 
-        if not self.is_identity:
+        self.conv3 = None
+        if self.num_channels != self.output_channels and not self.is_plain:
             self.conv3 = nn.Conv2d(
                 num_channels,
                 output_channels,
@@ -35,8 +38,7 @@ class ResidualBlock(nn.Module):
                 stride=1,
                 device=self.device,
             )
-        else:
-            self.conv3 = None
+
         self.conv4 = nn.Conv2d(
             num_channels,
             output_channels,
@@ -50,9 +52,10 @@ class ResidualBlock(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # Init residual
-        y = x
-        if self.conv3 is not None:
-            y = self.conv3(x)
+        if not self.is_plain:
+            y = x
+            if self.conv3 is not None:
+                y = self.conv3(x)
         # Conv block 1
         x = self.conv1(x)
         x = self.bn(x)
@@ -60,10 +63,15 @@ class ResidualBlock(nn.Module):
         # Conv block 2
         x = self.conv2(x)
         x = self.bn(x)
+        if self.is_plain:
+            x = self.conv4(x)
+            return self.reLu(x)
+
         # Add residual to output of stacked
         if y.shape[1] != x.shape[1]:
             y = y[:, : x.shape[1], :, :]
         x += y
+
         # Last conv block
         x = self.conv4(x)
 

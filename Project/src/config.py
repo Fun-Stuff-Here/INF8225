@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 import torch
 import torch.nn as nn
 import torchvision as torch_vision
@@ -10,7 +10,7 @@ from nn_modules.res_net_model import ResNetModel
 @dataclass
 class Config:
     # General parameters
-    epochs: int = 5
+    epochs: int = 6
     batch_size: int = 32
     lr: float = 1e-3
     betas: tuple = (0.9, 0.99)
@@ -21,7 +21,7 @@ class Config:
     loss = nn.CrossEntropyLoss()
     seed: int = 0
     log_every: int = 50
-    classes = (
+    classes: tuple[str] = (
         "plane",
         "car",
         "bird",
@@ -90,7 +90,18 @@ class Config:
         self.residual_blocks = args[0]
         self.model = ResNetModel(*args, **kwargs, device=self.device)
         self.model.to(self.device)
+        self.is_plain = kwargs["is_plain"]
         self.optimizer = optimizer.Adam(
             self.model.parameters(), lr=self.lr, betas=self.betas
         )
+        self.n_layers = len(self.residual_blocks) * 3 + 2
         torch.manual_seed(self.seed)
+
+    @property
+    def values(self) -> dict:
+        config_dict = asdict(self)
+        config_dict["n_layers"] = self.n_layers
+        config_dict["model"] = str(self.model)
+        config_dict["residual_blocks"] = [str(block) for block in self.residual_blocks]
+        config_dict["is_plain"] = self.is_plain
+        return config_dict
