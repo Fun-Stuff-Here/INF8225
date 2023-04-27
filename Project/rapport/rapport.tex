@@ -22,9 +22,7 @@
 \usepackage{algorithmic}
 \urlstyle{same}
 
-
 \title{Exploration d'un Resnet pour la classification d'images}
-
 
 \author{
 Nicolas Dépelteau
@@ -53,18 +51,48 @@ thi-ngoc-dung.nguyen@polymtl.ca
 TODO Une introduction avec un petit résumé des travaux antérieurs qui existent dans la littérature
 
 \section{Les réseaux convolutifs}
+Un réseau convolutif est un réseau dans lequel les neurones sont organisés en couches.
+Chaque couche est composée de plusieurs neurones. Chaque neurone est connecté à tous les neurones de la couche précédente.
+Chaque connexion est associée à un poids. Lorsque le réseau est activé, chaque neurone calcule une somme
+pondérée des valeurs de sortie des neurones de la couche précédente.
+Cette opération est une convolution dans le cas d'un réseau convolutif.
+Cette somme est ensuite passée à une fonction d'activation.
+La fonction d'activation est utilisée pour introduire une non-linéarité dans le réseau.
+La fonction d'activation la plus utilisée est la fonction ReLU. La fonction ReLU est définie comme suit:
+\begin{equation}
+    f(x) = max(0, x)
+\end{equation}
 
-TODO l'expliquation des réseaux convolutifs
 \subsection{Convolution}
-
-TODO l'expliquation de la convolution
+L'opération de convolution est une opération mathématique qui est utilisée pour extraire des caractéristiques d'une image.
+L'opération de convolution est définie comme suit:
+\begin{equation}
+    S(i, j) = (I * K)(i, j) = \sum_{m} \sum_{n} I(m, n)K(i - m, j - n)
+\end{equation}
+où $I$ est l'image d'entrée, $K$ est le noyau de convolution et $S$ est l'image de sortie.
+Le noyau de convolution est une matrice de taille $m \times n$.
+L'image de sortie est une image de taille $m \times n$.
+L'image de sortie est calculée en faisant glisser le noyau de convolution sur l'image d'entrée.
 
 \subsection{Pooling}
+Le pooling est une opération qui est utilisée pour réduire la taille de la carte des caractéristiques.
+Le pooling est effectué en faisant glisser une fenêtre sur la carte des caractéristiques.
+La valeur de sortie de la fenêtre est la valeur maximale de la fenêtre dans le cas du max pooling.
+Toutefois il existe aussi d'autres types de pooling comme le average pooling.
+Le average pooling est une opération qui est similaire au max pooling.
+La valeur de sortie de la fenêtre est la moyenne des valeurs de la fenêtre.
+La taille de la fenêtre est un hyperparamètre du réseau.
 
-TODO l'expliquation du pooling
 \subsection{Le problème  de dégradation}
 
 TODO l'expliquation du problème de dégradation
+
+Le problème de dégradation est un problème qui est présent dans les réseaux profonds.
+Ce problème est causé par la présence de couches profondes dans le réseau.
+
+
+
+
 \section{Resnet}
 
 TODO l'expliquation des Resnet
