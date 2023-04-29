@@ -10,11 +10,10 @@ from nn_modules.res_net_model import ResNetModel
 @dataclass
 class Config:
     # General parameters
-    epochs: int = 6
-    batch_size: int = 32
+    epochs: int = 10
+    batch_size: int = 128
     lr: float = 1e-3
     betas: tuple = (0.9, 0.99)
-    clip: float = 5
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
 
     # Others
@@ -94,7 +93,7 @@ class Config:
         self.optimizer = optimizer.Adam(
             self.model.parameters(), lr=self.lr, betas=self.betas
         )
-        self.n_layers = len(self.residual_blocks) * 3 + 2
+        self.n_layers = len(self.residual_blocks) * 2 + 2
         torch.manual_seed(self.seed)
 
     @property

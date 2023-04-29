@@ -14,7 +14,6 @@ def train_model(model: nn.Module, config: Config) -> None:
     """Train the model."""
     train_loader, val_loader = config.train_loader, config.validation_loader
     optimizer = config.optimizer
-    clip = config.clip
     device = config.device
     epochs = config.epochs
 
@@ -38,7 +37,6 @@ def train_model(model: nn.Module, config: Config) -> None:
             loss = config.loss(outputs, labels)
 
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
             optimizer.step()
 
             metrics = Metric(
