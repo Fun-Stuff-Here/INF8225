@@ -10,7 +10,7 @@ from nn_modules.res_net_model import ResNetModel
 @dataclass
 class Config:
     # General parameters
-    epochs: int = 10
+    epochs: int = 30
     batch_size: int = 128
     lr: float = 1e-3
     betas: tuple = (0.9, 0.99)
@@ -18,7 +18,7 @@ class Config:
 
     # Others
     loss = nn.CrossEntropyLoss()
-    seed: int = 0
+    seed: int = 69
     log_every: int = 50
     classes: tuple[str] = (
         "plane",
