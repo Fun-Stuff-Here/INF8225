@@ -15,3 +15,5 @@
 *.log
 
 *.out
+*.DS_STORE
+.idea
