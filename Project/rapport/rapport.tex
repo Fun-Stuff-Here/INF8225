@@ -21,9 +21,9 @@
 \title{Exploration d'un Resnet pour la classification d'images}
 
 \author{
-Nicolas Dépelteau
+Nicolas Dépelteau - 2083544
 \and
-Dung Nguyen
+Dung Nguyen - 2916011
 \affiliations{}
 Polytechnique Montréal
 \emails{}
@@ -218,7 +218,7 @@ générique de ResNet présentée dans la figure~\ref{fig: net}.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{llllll}
+\begin{tabular}{lcccccc}
 \hline
 Blocs résiduels & 8 & 14 & 18 & 34 & 50 \\
 \hline
@@ -248,33 +248,96 @@ chaque pixel est représenté par trois valeurs de 0 à 255, une pour chaque can
 
 \subsection{Les hyper paramètres}
 
-Nous avons utilisé une fonction de perte de type ``cross-entropy'' et un optimiseur de type ``Adam'' pour entraîner les modèles.
-Les modèles ont été entraînés pendant 10 époques.
+Nous avons utilisé une fonction de perte de type ``cross-entropy'' et un optimiseur de type ``Adam'' paramétrer avec 0.9 et 0.99
+pour entraîner les modèles.
+Les modèles ont été entraînés pendant 10 époques avec un taux d'apprentissage de 0.001.
 
 \subsection{Les résultats}
 
-Les résultats de l'expérimentation sont présentés dans la graphique 4.
+Commençons par les résultats des modèles simples, c'est-à-dire sans résiduel. La figure~\ref{fig:result_plain} montre
+les résultats des modèles simples. On peut voir que les modèles avec 8 et 14 couches ont une précision dans le tableau~\ref{tab:result_plain}
+de 49.4\% et 42.7\% respectivement. On peut y remarquer le problème de la dégradation du modèle, car le modèle avec 14 couches ont une erreur
+plus importante que celui de 8 couches. On peut également observer le phénomène du gradient qui disparaît pour le modèle avec 18 et plus couches,
+car le modèle avec 18 couches a une précision de 10\%, sois la prédiction de toujours la même classe, et les modèles avec 34 et 50 couches n'ont pas pu être entraînés.
+En effet, ces modèles de plus grande taille ne réussissent pas à converger, car le gradient disparaît.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=240pt,height=100pt]{./img/result}
-    \caption{Résultats des modèles ResNet sur le jeu de données CIFAR-10}\label{fig:result}
+    \includegraphics[width=240pt,height=100pt]{./img/result_plain.png}
+    \caption{Résultats des modèles simple sur le jeu de données CIFAR-10}\label{fig:result_plain}
 \end{figure}
 
-Nous constatons que les trois modèles ont une précision élevée sur le jeu de données CIFAR-10.
-La précision augmente avec la profondeur du réseau. ResNet-50 est le modèle qui obtient la meilleure performance,
-avec une précision de 94,1\% sur l'ensemble de test.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{cc}
+    \hline
+    Taille du modèle & Précision après 10 époques en \% \\
+    \hline
+    8 & 49.4 \\
+    14 & 42.7 \\
+    18 & 10.0 \\
+    34 & - \\
+    50 & - \\
+    \hline
+    \end{tabular}
+    \caption{Résultats des expérimentations avec les modèles simples}\label{tab:result_plain}
+\end{table}
+
+Par la suite, pour les résultats des modèles résiduels, la figure~\ref{fig:result_resnet} montre les résultats des modèles résiduels.
+On peut voir que les modèles avec 8 et 14 couches ont une précision dans le tableau~\ref{tab:result_resnet} de 53.5\% et 55\% respectivement.
+Les modèles résiduel ont une meilleure performance que les modèles simples. Le problème du gradient qui disparaît est alors atténué par les 
+connection résiduel.
+On peut également observer que les modèles avec 18 couches est plus performant que ceux de 14 et 8 couches.
+Cependant, les modèles avec 34 et 50 couches ont une précision de 50.1\% et 51.5\% respectivement, ce qui est moins performant
+que les modèles avec 8 et 14 couches. Par contre, le modèle à 50 couches est plus performant que celui à 34 couches. Donc, on peut
+conclure que les modèles résiduels de plus grande taille
+ne sont pas nécessairement plus performant que les modèles résiduels de plus petite taille.
+Il en reste que le nombre de couches est grandement supérieurs.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=240pt,height=100pt]{./img/result_resnet.png}
+    \caption{Résultats des modèles résiduel sur le jeu de données CIFAR-10}\label{fig:result_resnet}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{cc}
+    \hline
+    Taille du modèle & Précision après 10 époques en \% \\
+    \hline
+    8 & 53.5 \\
+    14 & 55.0 \\
+    18 & 58.0 \\
+    34 & 50.1 \\
+    50 & 51.5 \\
+    \hline
+    \end{tabular}
+    \caption{Résultats des expérimentations avec les modèles résiduel}\label{tab:result_resnet}
+\end{table}
 
 \section{Analyse critique de l'approche}
 
 L'utilisation du jeu de données CIFAR-10 est un bon choix pour tester la performance des modèles de ResNet,
 car il s'agit d'un jeu de données standard pour la reconnaissance d'images et il est assez complexe pour évaluer
-la performance des modèles.
-Cependant, le choix d'un jeu de données de taille plus importante pourrait permettre d'évaluer la performance
-des modèles à une plus grande échelle.
-a durée de l'entraînement de 10 époques semble raisonnable pour le jeu de données CIFAR-10 et pour les
-modèles de ResNet testés. Il serait intéressant d'explorer l'impact de la durée de l'entraînement sur la
-performance des modèles et de trouver un juste équilibre entre la performance et la durée d'entraînement.
+la performance des modèles. De plus, il y a pas beaucoup de données, ce qui permet de tester rapidement les modèles.
+la durée de l'entraînement de 10 époques semble raisonnable pour le jeu de données CIFAR-10 et pour les
+modèles de ResNet testés. Il est arrivé que les modèles ne convergeaient pas, car le gradient disparaissait. Cependant, suite
+à une réinitialisation des poids, les modèles ont convergé. Il est donc possible que nos résultats soit biaisé dans ce sens puisque
+pour chacun des tailles nous avons pris le premier modèle qui a convergé. Il aurait été intéressant de faire plusieurs essais pour
+chaque taille de modèle afin de pouvoir comparer les moyennes de ces échantillons au lieu d'un exemplaire seulement. Notamment pour
+la performance du modèle à 50 couches qui est supérieurs à celui à 34 couches, mais inférieur à celui à 18 couches. Il est possible
+que ce résultat soit dû à un biais de sélection. Il aurait également été intéressant de tester les modèles avec plus d'époques, car
+il est possible que les modèles de plus grande taille convergent après plus d'époques. Cependant, il aurait fallu augmenter le nombre
+d'époques pour tous les modèles, car il est possible que les modèles de plus petite taille convergent plus rapidement que les modèles
+de plus grande taille. Il aurait également été intéressant de tester les modèles avec des hyper paramètres différents, car il est possible
+que les modèles de plus grande taille aient besoin d'hyper paramètres différents pour converger vers des meilleurs résultats. Cependant,
+avec la restriction de temps et de ressources informatique pour l'entraînement des modèles, il n'a pas été possible de tester ces
+différentes approches. Les modèles ont été entraînés sur un ordinateur portable personnel avec une carte graphique NVIDIA GeForce RTX 2060.
+Aussi, l'ajout de la normalisation de lot a peut-être nui à la performance des modèles simples, puisque le modèle résiduel de l'article original
+l'utilisait sur les modèles résiduels à chaque bloc. Donc, nous avons laissé la normalisation de lot pour les modèles simple.
+Somme toute, les résultats obtenus sont intéressants, car ils montrent que les modèles résiduels sont plus performants que les modèles simples
+pour la classification d'images.
 
 \section{Conclusion}
 
@@ -282,8 +345,8 @@ Ce projet a permis d'explorer des performances des réseaux de neurones profonds
 en se concentrant sur les modèles ResNet qui ont été introduits pour surmonter les problèmes de dégradation de
 performances rencontrés par les réseaux profonds traditionnels.
 Les résultats obtenus ont confirmé l'efficacité des modèles ResNet pour la reconnaissance d'images, en montrant
-que les modèles de ResNet profonds (ResNet-34 et ResNet-50) ont atteint des performances de classification élevées
-sur le jeu de données CIFAR-10.
+que les modèles de ResNet profonds ont atteint des performances de classification élevées par rapport aux modèles
+simples sur le jeu de données CIFAR-10.
 Depuis leur introduction en 2016, les modèles ResNet ont été largement utilisés dans divers domaines, notamment
 la reconnaissance d'images, la segmentation d'images, la détection d'objets et la classification de textes.
 Les modèles utilisant ResNet pour différentes tâches: ResNeXt, Wide ResNet, YOLO, GANs, etc.
