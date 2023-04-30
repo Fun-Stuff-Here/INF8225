@@ -190,31 +190,61 @@ Le nouvel échantillon normalisé est:
 \end{equation}
 
 \section{Architecture}
-En général, l'architecture commune des différents modèles ResNet profonds a la même règle.
+
+L'architecture des modèles que nous avons utilisé est basée sur l'architecture générique de ResNet présentée dans l'article
+``Deep Residual Learning for Image Recognition''~\cite{resnet}. Cette architecture est composée de plusieurs blocs de
+convolution, puis d'une couche dense complètement connecté. Pour la version avec résiduel, il y a l'opération de l'addition entre
+l'entrée du bloc avec ajustement si nécessaire et la sortie, comme montré dans la figure~\ref{fig: res_blocs}.
+Il y a également une normalisation par lots après les convolutions.
+il y a un dropout avec une probabilité de 0.5.
+
 \begin{figure}[h]
     \centering
-    \includegraphics[width=240pt,height=120pt]{./img/model}
-    \caption{Architecture de ResNet-18}\label{fig: model}
+    \includegraphics[width=240pt,height=450pt]{./schema/bloc.png}
+    \caption{Blocs résiduels}\label{fig: res_blocs}
 \end{figure}
-L'idée cohérente appliquée pendant l'ensemble des modèles, à savoir la couche de normalisation par lots, suit juste
-derrière chaque couche convolutive.
-Comme montré dans la figure 3, l'architecture d'un Resnet18 contient un bloc résiduel entouré d'un rectangle en tirets
-avec 5 couches empilées dans la figure. Les deux blocs résiduels de départ sont des blocs d'identification. Après cela,
-nous répétons trois fois [couche convolutive + couche mapping d'identification]. Enfin, la mise en commun de la moyenne
-globale s'applique pour capturer les caractéristiques générales en fonction de la dimension de profondeur et transmettre
-la sortie finale entièrement connectée.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=120pt,height=370pt]{./schema/net.png}
+    \caption{Architecture générique du model}\label{fig: net}
+\end{figure}
+
+Le tableau~\ref{tab:resnet} montre les différentes architectures que nous avons utilisées. Les architectures sont
+définies par leur nombre de blocs résiduels. Par exemple, la plus petite architecture avec seulement 8 couches contient
+des blocs résiduels respectif de 16 à 32, 32 à 64 et 64 à 128. Il ne faut pas oublié que ces blocs sont insérés dans l'architecture
+générique de ResNet présentée dans la figure~\ref{fig: net}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llllll}
+\hline
+Blocs résiduels & 8 & 14 & 18 & 34 & 50 \\
+\hline
+16 $\rightarrow $ 16 & - & 1 & 1 & 3 & 6 \\
+16 $\rightarrow $ 32 & 1 & 1 & 1 & 1 & 1 \\
+32 $\rightarrow $ 32 & - & 1 & 1 & 3 & 5 \\
+32 $\rightarrow $ 64 & 1 & 1 & 1 & 1 & 1 \\
+64 $\rightarrow $ 64 & - & - & 1 & 5 & 5 \\
+64 $\rightarrow $ 128 & 1 & 1 & 1 & 1 & 1 \\
+128$\rightarrow $ 128 & - & 1 & 1 & 2 & 5 \\
+\hline
+\end{tabular}
+\caption{Nombre de blocs résiduels pour chacune des architectures ayant un nombre de couche différent}\label{tab:resnet}
+\end{table}
 
 \section{Expérimentation}
 
-Dans ce rapport, nous allons explorer la performance de trois modèles de ResNet: ResNet-18, ResNet-34 et ResNet-50.
-Nous avons entraîné les trois modèles de ResNet sur un jeu de données d'images, en utilisant la bibliothèque PyTorch.
+Dans ce rapport, nous allons explorer la performance de cinq modèles de ResNet: ResNet-8, ResNet-14, ResNet-18, ResNet-34 et ResNet-50.
+Nous avons entraîné les cinq modèles de ResNet sur un jeu de données d'images, en utilisant la bibliothèque PyTorch.
 
 \subsection{Le jeu de données}
 
 Le jeu de données utilisé est le jeu de données CIFAR-10, qui contient 50 000 images d'entraînement et 10 000 images
 de test. Les images sont de taille 32$\times$32 pixels et appartiennent à 10 classes différentes. Les classes sont:
 avion, automobile, oiseau, chat, cerf, chien, grenouille, cheval, bateau et camion. Les images sont en couleur,
-chaque pixel est représenté par trois valeurs de 0 à 255, une pour chaque canal de couleur (rouge, vert et bleu).
+chaque pixel est représenté par trois valeurs de 0 à 255, une pour chaque canal de couleur soit le rouge, le vert et le bleu.
 
 \subsection{Les hyper paramètres}
 

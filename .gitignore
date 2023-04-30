@@ -17,3 +17,5 @@
 *.out
 *.DS_STORE
 .idea
+
+*.~vsdx
