@@ -6,6 +6,8 @@ import torchvision.transforms as transforms
 import torch.optim as optimizer
 from nn_modules.res_net_model import ResNetModel
 
+DATA_PATH = "./data"
+
 
 @dataclass
 class Config:
@@ -36,7 +38,7 @@ class Config:
     # training sets and loader
     train_loader = torch.utils.data.DataLoader(
         torch_vision.datasets.CIFAR10(
-            root="./data",
+            root=DATA_PATH,
             train=True,
             download=True,
             transform=transforms.Compose(
@@ -53,7 +55,7 @@ class Config:
 
     validation_loader = torch.utils.data.DataLoader(
         torch_vision.datasets.CIFAR10(
-            root="./data",
+            root=DATA_PATH,
             train=True,
             download=True,
             transform=transforms.Compose(
@@ -70,7 +72,7 @@ class Config:
 
     test_loader = torch.utils.data.DataLoader(
         torch_vision.datasets.CIFAR10(
-            root="./data",
+            root=DATA_PATH,
             train=False,
             download=True,
             transform=transforms.Compose(
