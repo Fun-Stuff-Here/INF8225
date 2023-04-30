@@ -46,17 +46,17 @@ thi-ngoc-dung.nguyen@polymtl.ca
 
 Plusieurs travaux ont été proposés pour améliorer les performances des réseaux de neurones profonds pour la classification d'images.
 Parmi ces travaux, on peut citer l'article ``Very Deep Convolutional Networks for Large-Scale Image Recognition'' proposé par Karen
-Simonyan et Andrew Zisserman en 2015, qui proposait des réseaux VGG ayant jusqu'à 19 couches de convolution pour extraire des
+Simonyan et Andrew Zisserman en 2015~\cite{simonyan2015deep}, qui proposait des réseaux VGG ayant jusqu'à 19 couches de convolution pour extraire des
 caractéristiques visuelles à partir des images.
 Cependant, malgré des performances de classification impressionnantes, ces réseaux de neurones profonds ont été confrontés à un
 problème de dégradation des performances avec l'augmentation de la profondeur.
 C'est dans ce contexte que l'article ``Deep Residual Learning for Image Recognition'' proposé par Kaiming He, Xiangyu Zhang,
-Shaoqing Ren et Jian Sun en 2016, a introduit les connexions résiduelles pour permettre un apprentissage en profondeur plus efficace
+Shaoqing Ren et Jian Sun en 2016~\cite{resnet}, a introduit les connexions résiduelles pour permettre un apprentissage en profondeur plus efficace
 et surmonter ce problème de dégradation.
 Dans ce texte nous allons présenter les réseaux de neurones convolutifs et les connexions résiduelles ainsi que nos expériences
 sur ceux-ci.
 
-\section{Les réseaux convolutifs}
+\section{Les réseaux convolutifs (CNN)}
 Un réseau convolutif est un réseau dans lequel les neurones sont organisés en couches.
 Chaque couche est composée de plusieurs neurones. Chaque neurone est connecté à tous les neurones de la couche précédente.
 Chaque connexion est associée à un poids. Lorsque le réseau est activé, chaque neurone calcule une somme
@@ -64,9 +64,10 @@ pondérée des valeurs de sortie des neurones de la couche précédente.
 Cette opération est une convolution dans le cas d'un réseau convolutif.
 Cette somme est ensuite passée à une fonction d'activation.
 La fonction d'activation est utilisée pour introduire une non-linéarité dans le réseau.
-La fonction d'activation la plus utilisée est la fonction ReLU. La fonction ReLU est définie comme suit:
+La fonction d'activation la plus utilisée est la fonction ReLU.\@
+La fonction ReLU est définie comme suit:
 \begin{equation}
-    f(x) = max(0, x)
+    f(x) = \max(0, x)
 \end{equation}
 
 \subsection{Convolution}
@@ -80,26 +81,52 @@ Le noyau de convolution est une matrice de taille $m \times n$.
 L'image de sortie est une image de taille $m \times n$.
 L'image de sortie est calculée en faisant glisser le noyau de convolution sur l'image d'entrée.
 
-\subsection{Pooling}
-Le pooling est une opération qui est utilisée pour réduire la taille de la carte des caractéristiques.
-Le pooling est effectué en faisant glisser une fenêtre sur la carte des caractéristiques.
-La valeur de sortie de la fenêtre est la valeur maximale de la fenêtre dans le cas du max pooling.
-Toutefois il existe aussi d'autres types de pooling comme le average pooling.
-Le average pooling est une opération qui est similaire au max pooling.
+
+\subsection{Regroupement (Pooling)}
+Le regroupement est une opération qui est utilisée pour réduire la taille de la carte des caractéristiques.
+Le regroupement est effectué en faisant glisser une fenêtre sur la carte des caractéristiques.
+La valeur de sortie de la fenêtre est la valeur maximale de la fenêtre dans le cas du ``max pooling''.
+Toutefois il existe aussi d'autres types de regroupement comme le ``average pooling''.
+Le regroupement par la moyenne est une opération qui est similaire au ``max pooling''.
 La valeur de sortie de la fenêtre est la moyenne des valeurs de la fenêtre.
 La taille de la fenêtre est un hyper paramètre du réseau.
 
-\subsection{Le problème  de dégradation}
+\subsection{Le problème du gradient qui disparaît (Vanishing gradient problem)}
+Le problème du gradient qui disparaît est un problème qui est présent dans les réseaux profonds.
+Ce problème est causé par la fonction d'activation ReLU.\@
+La fonction ReLU est définie comme suit:
+\begin{equation}
+    f(x) = \max(0, x)
+\end{equation}
+La dérivée de la fonction ReLU est définie comme suit:
+\begin{equation}
+    f'(x) = \begin{cases}
+        1 & \text{si } x > 0 \\
+        0 & \text{sinon}
+    \end{cases}
+\end{equation}
+
+Lorsque la fonction ReLU est utilisée comme fonction d'activation, la dérivée de la fonction d'activation est soit 0 ou 1.
+Lorsque la dérivée de la fonction d'activation est 0, le gradient est 0.
+Lorsque le gradient est 0, le poids n'est pas mis à jour.
+Lorsque le poids n'est pas mis à jour, le réseau ne peut pas apprendre.
+C'est pourquoi le problème du gradient qui disparaît est un problème qui empêche les réseaux profonds d'apprendre puisqu'il y a plus
+de couche à traverser lors de la propagation par l'arrière. Effectivement, un gradient null à une couche profonde empêche
+la mise à jour des poids des couches précédentes. Et cela se produit de plus en plus souvent lorsque la profondeur du réseau augmente.
+
+\subsection{Le problème de dégradation}
 Le problème de dégradation est un problème qui est présent dans les réseaux profonds.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=200pt,height=100pt]{./img/degradation}
-    \caption{Problème de dégradation: Réseau plus profond a une training error et test error  plus élevée}\label{fig: degrad}
+    \includegraphics[width=240pt,height=120pt]{./img/degradation}
+    \caption{Problème de dégradation: Réseau plus profond avec une plus petite précision}\label{fig: degrad}
 \end{figure}
+
 Ce phénomène est contre-intuitif, car on s'attendrait à ce que l'ajout de couches supplémentaires permette au réseau de mieux
 capturer les caractéristiques des images et donc d'augmenter ses performances.
-Cependant, les auteurs de l'article ``Deep Residual Learning for Image Recognition'' proposent une explication à ce phénomène
+Cependant, les auteurs de l'article ``Deep Residual Learning for Image Recognition''~\cite{resnet}
+proposent une explication à ce phénomène
 en affirmant que les couches profondes ont des difficultés à apprendre des fonctions identité,
 c'est-à-dire à conserver l'information non perturbée par la transformation non-linéaire introduite par la couche.
 Cette perte d'information a un effet négatif sur les performances du réseau lors de l'ajout de couches supplémentaires.
@@ -107,46 +134,48 @@ Cette perte d'information a un effet négatif sur les performances du réseau lo
 \section{Resnet}
 
 Pour pallier ce problème, les auteurs proposent d'utiliser des connexions résiduelles pour permettre un apprentissage en
-profondeur plus efficace.
+profondeur plus efficace~\cite{resnet}. En effet, au lieu d'apprendre directement la fonction $H(x)$ où $x$ est l'entrée d'une pile
+de couche dont la sortie est $H(x)$. Le réseau apprend
+plutôt son résidu $F(x) = H(x) - x$. La fonction $F(x)$ est plus facile à apprendre que la fonction $H(x)$, car elle est
+plus proche de la fonction identité. La fonction $H(x)$ est alors approximée par la fonction $F(x) + x$.
+Le réseau Resnet est composé de plusieurs blocs de convolution, puis d'une couche dense complètement connecté.
 
-\subsection{Skip connection}
-La caractéristique la plus particulière de ResNet est que la ``skip connection'' est appliquée à l'intérieur de chaque bloc
+\subsection{Connection résiduelle}
+La caractéristique la plus particulière de ResNet est que la connection résiduelle est appliquée à l'intérieur de chaque bloc
 pour aider le modèle à garder les résidus du passé vers le futur.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=150pt,height=90pt]{./img/skip}
-    \caption{Skip Connection dans un block de ResNet.}\label{fig: skip}
+    \caption{Connection résiduel dans un block de ResNet.}\cite{resnet}\label{fig: skip}
 \end{figure}
 
-Les auteurs ont ajouté une couche de mapping d'identification pour copier la couche apprise peu profonde dans une couche
-plus profonde. Cette couche de mapping est directement ajouté avec le bloc d'entrée précédent dans le bloc de sortie avec
-la même forme.
-Le résidu entre la couche la plus profonde par rapport à la couche la moins profonde est:
+Le bloc de ResNet est composé de deux couches de convolution et d'une couche pour ajuster les dimensions entre $F(x)$ et $x$.
+La fonction du bloc i est définie comme suit:
 
 \begin{equation}
-    F(x,Wi) = H(x) - x
+    H_i(x) = \sigma(W_{i,2} * \sigma(W_{i,1} * x) + W_{i,3} * x)
 \end{equation}
 
-où $x$ est la sortie de la couche apprise peu profonde, $Fx$ le feed forward non-linéarité $x$, $Wi$ est le paramètre de
-la couche de mapping d'identification et est appris par le modèle et $H(x)$ la sortie de réalité de l'ensemble du processus.
-Le processus d'apprentissage étudie en fait la transformation non linéaire $F(x,Wi)$ de résidu après chaque bloc entre
-l'entrée et la sortie.
-La sortie de la couche de mapping d'identification est ajoutée à la sortie de la couche apprise peu profonde pour former
-la sortie finale de ce bloc.
-Dans l'autre bloc, nous avons appliqué une transformation convolutive avant de ``skip connection'' afin d'étudier l'apprentissage
-des caractéristiques.
 \begin{equation}
-    y = F(x,Wi) +Conv(x)
+    W_{i, 3} =
+    \begin{cases}
+        I \text{ si les dimensions de x sont identiques à la sortie} \\
+        W_{i, 3}\text{ avec un noyau de } 1\times1 \text{ sinon}
+    \end{cases}
 \end{equation}
-Pour conserver la forme de sortie inchangée et réduire le nombre total de paramètres, les couches $Conv$ ont normalement
-une taille de noyau de 1 $\times$ 1.
-\subsection{Batch Normalization}
-ResNet est la première architecture appliquée Batch normalization à l'intérieur de chaque. Batch normalization aide le
+
+où $x$ est l'entrée du bloc, $\sigma$ est la fonction d'activation ReLU, $W_{i,1}$ et $W_{i,2}$ sont les paramètres de la
+couche de convolution et $W_{i,3}$ est le paramètre de la couche de la connection résiduelle.
+
+
+\subsection{normalisation par lots (Batch Normalization)}
+ResNet est la première architecture a appliqué normalisation par lots à l'intérieur de chacune des ses couches. La normalisation par lots aide le
 modèle à rester stable lors de la descente de gradient et à soutenir la convergence rapide du processus de formation vers
 un point optimal.
-Batch normalization est appliquée sur chaque mini-lot par normalisation standard $N(0,1)$. On a $B=x1,x2,...xm$ $m$ foot
-index indique la taille de mini-lot. Tous les échantillons d'entrée sont redimensionnés comme ci-dessous:
+La normalisation par lots est appliquée sur chaque mini-lot par une normalisation standard d'une gaussienne $N(0,1)$.
+On a $B=x_1,x_2,\dots x_m$.
+où $m$ indique la taille du mini-lot. Tous les échantillons d'entrée sont redimensionnés comme ci-dessous:
 \begin{equation}
     \mu = \frac{1}{m}\sum_{i=1}^{m}x_{i}
 \end{equation}
@@ -229,14 +258,7 @@ Depuis leur introduction en 2016, les modèles ResNet ont été largement utilis
 la reconnaissance d'images, la segmentation d'images, la détection d'objets et la classification de textes.
 Les modèles utilisant ResNet pour différentes tâches: ResNeXt, Wide ResNet, YOLO, GANs, etc.
 
-
-\begin{thebibliography}{9}
-\bibitem{he2016deep}
-Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. ``Deep Residual Learning for Image Recognition''.
-\emph{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 2016.
-
-\bibitem{https://d2l.ai/chapter_convolutional-modern/resnet.html}
-dive into deep learning. ``Residual Networks (ResNet) and ResNeXt'', 2016
-\end{thebibliography}
+\bibliographystyle{named}
+\bibliography{rapport}
 
 \end{document}
