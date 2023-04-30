@@ -57,7 +57,7 @@ Dans ce texte nous allons présenter les réseaux de neurones convolutifs et les
 sur ceux-ci.
 
 \section{Les réseaux convolutifs (CNN)}
-Un réseau convolutif est un réseau dans lequel les neurones sont organisés en couches.
+Un réseau convolutif est un réseau dans lequel les neurones sont organisées en couches.
 Chaque couche est composée de plusieurs neurones. Chaque neurone est connecté à tous les neurones de la couche précédente.
 Chaque connexion est associée à un poids. Lorsque le réseau est activé, chaque neurone calcule une somme
 pondérée des valeurs de sortie des neurones de la couche précédente.
@@ -111,7 +111,7 @@ Lorsque la dérivée de la fonction d'activation est 0, le gradient est 0.
 Lorsque le gradient est 0, le poids n'est pas mis à jour.
 Lorsque le poids n'est pas mis à jour, le réseau ne peut pas apprendre.
 C'est pourquoi le problème du gradient qui disparaît est un problème qui empêche les réseaux profonds d'apprendre puisqu'il y a plus
-de couche à traverser lors de la propagation par l'arrière. Effectivement, un gradient null à une couche profonde empêche
+de couches à traverser lors de la propagation par l'arrière. Effectivement, un gradient nul à une couche profonde empêche
 la mise à jour des poids des couches précédentes. Et cela se produit de plus en plus souvent lorsque la profondeur du réseau augmente.
 
 \subsection{Le problème de dégradation}
@@ -127,7 +127,7 @@ Ce phénomène est contre-intuitif, car on s'attendrait à ce que l'ajout de cou
 capturer les caractéristiques des images et donc d'augmenter ses performances.
 Cependant, les auteurs de l'article ``Deep Residual Learning for Image Recognition''~\cite{resnet}
 proposent une explication à ce phénomène
-en affirmant que les couches profondes ont des difficultés à apprendre des fonctions identité,
+en affirmant que les couches profondes ont des difficultés à apprendre des fonctions identités,
 c'est-à-dire à conserver l'information non perturbée par la transformation non-linéaire introduite par la couche.
 Cette perte d'information a un effet négatif sur les performances du réseau lors de l'ajout de couches supplémentaires.
 
@@ -138,7 +138,7 @@ profondeur plus efficace~\cite{resnet}. En effet, au lieu d'apprendre directemen
 de couche dont la sortie est $H(x)$. Le réseau apprend
 plutôt son résidu $F(x) = H(x) - x$. La fonction $F(x)$ est plus facile à apprendre que la fonction $H(x)$, car elle est
 plus proche de la fonction identité. La fonction $H(x)$ est alors approximée par la fonction $F(x) + x$.
-Le réseau Resnet est composé de plusieurs blocs de convolution, puis d'une couche dense complètement connecté.
+Le réseau Resnet est composé de plusieurs blocs de convolution, puis d'une couche dense complètement connectée.
 
 \subsection{Connection résiduelle}
 La caractéristique la plus particulière de ResNet est que la connection résiduelle est appliquée à l'intérieur de chaque bloc
@@ -169,11 +169,11 @@ où $x$ est l'entrée du bloc, $\sigma$ est la fonction d'activation ReLU, $W_{i
 couche de convolution et $W_{i,3}$ est le paramètre de la couche de la connection résiduelle.
 
 
-\subsection{normalisation par lots (Batch Normalization)}
+\subsection{Normalisation par lots (Batch Normalization)}
 ResNet est la première architecture a appliqué normalisation par lots à l'intérieur de chacune des ses couches. La normalisation par lots aide le
 modèle à rester stable lors de la descente de gradient et à soutenir la convergence rapide du processus de formation vers
 un point optimal.
-La normalisation par lots est appliquée sur chaque mini-lot par une normalisation standard d'une gaussienne $N(0,1)$.
+La normalisation par lots est appliquée sur chaque mini-lot par une normalisation standard à l'aide d'une gaussienne $N(0,1)$.
 On a $B=x_1,x_2,\dots x_m$.
 où $m$ indique la taille du mini-lot. Tous les échantillons d'entrée sont redimensionnés comme ci-dessous:
 \begin{equation}
@@ -196,7 +196,7 @@ L'architecture des modèles que nous avons utilisé est basée sur l'architectur
 convolution, puis d'une couche dense complètement connecté. Pour la version avec résiduel, il y a l'opération de l'addition entre
 l'entrée du bloc avec ajustement si nécessaire et la sortie, comme montré dans la figure~\ref{fig: res_blocs}.
 Il y a également une normalisation par lots après les convolutions.
-il y a un dropout avec une probabilité de 0.5.
+Il y a un dropout avec une probabilité de 0.5.
 
 \begin{figure}[h]
     \centering
@@ -213,7 +213,7 @@ il y a un dropout avec une probabilité de 0.5.
 
 Le tableau~\ref{tab:resnet} montre les différentes architectures que nous avons utilisées. Les architectures sont
 définies par leur nombre de blocs résiduels. Par exemple, la plus petite architecture avec seulement 8 couches contient
-des blocs résiduels respectif de 16 à 32, 32 à 64 et 64 à 128. Il ne faut pas oublié que ces blocs sont insérés dans l'architecture
+des blocs résiduels respectifs de 16 à 32, 32 à 64 et 64 à 128. Il ne faut pas oublier que ces blocs sont insérés dans l'architecture
 générique de ResNet présentée dans la figure~\ref{fig: net}.
 
 \begin{table}[H]
@@ -244,11 +244,11 @@ Nous avons entraîné les cinq modèles de ResNet sur un jeu de données d'image
 Le jeu de données utilisé est le jeu de données CIFAR-10, qui contient 50 000 images d'entraînement et 10 000 images
 de test. Les images sont de taille 32$\times$32 pixels et appartiennent à 10 classes différentes. Les classes sont:
 avion, automobile, oiseau, chat, cerf, chien, grenouille, cheval, bateau et camion. Les images sont en couleur,
-chaque pixel est représenté par trois valeurs de 0 à 255, une pour chaque canal de couleur soit le rouge, le vert et le bleu.
+chaque pixel est représentée par trois valeurs de 0 à 255, une pour chaque canal de couleur soit le rouge, le vert et le bleu.
 
 \subsection{Les hyper paramètres}
 
-Nous avons utilisé une fonction de perte de type ``cross-entropy'' et un optimiseur de type ``Adam'' paramétrer avec 0.9 et 0.99
+Nous avons utilisé une fonction de perte de type ``cross-entropy'' et un optimiseur de type ``Adam'' paramétré avec 0.9 et 0.99
 pour entraîner les modèles.
 Les modèles ont été entraînés pendant 10 époques avec un taux d'apprentissage de 0.001.
 
@@ -258,13 +258,13 @@ Commençons par les résultats des modèles simples, c'est-à-dire sans résidue
 les résultats des modèles simples. On peut voir que les modèles avec 8 et 14 couches ont une précision dans le tableau~\ref{tab:result_plain}
 de 49.4\% et 42.7\% respectivement. On peut y remarquer le problème de la dégradation du modèle, car le modèle avec 14 couches ont une erreur
 plus importante que celui de 8 couches. On peut également observer le phénomène du gradient qui disparaît pour le modèle avec 18 et plus couches,
-car le modèle avec 18 couches a une précision de 10\%, sois la prédiction de toujours la même classe, et les modèles avec 34 et 50 couches n'ont pas pu être entraînés.
+car le modèle avec 18 couches a une précision de 10\%, et les modèles avec 34 et 50 couches n'ont pas pu être entraînés.
 En effet, ces modèles de plus grande taille ne réussissent pas à converger, car le gradient disparaît.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=240pt,height=100pt]{./img/result_plain.png}
-    \caption{Résultats des modèles simple sur le jeu de données CIFAR-10}\label{fig:result_plain}
+    \caption{Résultats des modèles simples sur le jeu de données CIFAR-10}\label{fig:result_plain}
 \end{figure}
 
 \begin{table}[H]
@@ -285,19 +285,19 @@ En effet, ces modèles de plus grande taille ne réussissent pas à converger, c
 
 Par la suite, pour les résultats des modèles résiduels, la figure~\ref{fig:result_resnet} montre les résultats des modèles résiduels.
 On peut voir que les modèles avec 8 et 14 couches ont une précision dans le tableau~\ref{tab:result_resnet} de 53.5\% et 55\% respectivement.
-Les modèles résiduel ont une meilleure performance que les modèles simples. Le problème du gradient qui disparaît est alors atténué par les 
-connection résiduel.
+Les modèles résiduels ont une meilleure performance que les modèles simples. Le problème du gradient qui disparaît est alors atténué par les 
+connection résiduelles.
 On peut également observer que les modèles avec 18 couches est plus performant que ceux de 14 et 8 couches.
 Cependant, les modèles avec 34 et 50 couches ont une précision de 50.1\% et 51.5\% respectivement, ce qui est moins performant
 que les modèles avec 8 et 14 couches. Par contre, le modèle à 50 couches est plus performant que celui à 34 couches. Donc, on peut
 conclure que les modèles résiduels de plus grande taille
-ne sont pas nécessairement plus performant que les modèles résiduels de plus petite taille.
-Il en reste que le nombre de couches est grandement supérieurs.
+ne sont pas nécessairement plus performants que les modèles résiduels de plus petite taille.
+Il en reste que le nombre de couches est grandement supérieur.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=240pt,height=100pt]{./img/result_resnet.png}
-    \caption{Résultats des modèles résiduel sur le jeu de données CIFAR-10}\label{fig:result_resnet}
+    \caption{Résultats des modèles résiduels sur le jeu de données CIFAR-10}\label{fig:result_resnet}
 \end{figure}
 
 \begin{table}[H]
@@ -313,7 +313,7 @@ Il en reste que le nombre de couches est grandement supérieurs.
     50 & 51.5 \\
     \hline
     \end{tabular}
-    \caption{Résultats des expérimentations avec les modèles résiduel}\label{tab:result_resnet}
+    \caption{Résultats des expérimentations avec les modèles résiduels}\label{tab:result_resnet}
 \end{table}
 
 \section{Analyse critique de l'approche}
@@ -321,21 +321,21 @@ Il en reste que le nombre de couches est grandement supérieurs.
 L'utilisation du jeu de données CIFAR-10 est un bon choix pour tester la performance des modèles de ResNet,
 car il s'agit d'un jeu de données standard pour la reconnaissance d'images et il est assez complexe pour évaluer
 la performance des modèles. De plus, il y a pas beaucoup de données, ce qui permet de tester rapidement les modèles.
-la durée de l'entraînement de 10 époques semble raisonnable pour le jeu de données CIFAR-10 et pour les
+La durée de l'entraînement de 10 époques semble raisonnable pour le jeu de données CIFAR-10 et pour les
 modèles de ResNet testés. Il est arrivé que les modèles ne convergeaient pas, car le gradient disparaissait. Cependant, suite
-à une réinitialisation des poids, les modèles ont convergé. Il est donc possible que nos résultats soit biaisé dans ce sens puisque
-pour chacun des tailles nous avons pris le premier modèle qui a convergé. Il aurait été intéressant de faire plusieurs essais pour
-chaque taille de modèle afin de pouvoir comparer les moyennes de ces échantillons au lieu d'un exemplaire seulement. Notamment pour
+à une réinitialisation des poids, les modèles ont convergé. Il est donc possible que nos résultats soient biaisés dans ce sens puisque
+pour chacune des tailles nous avons pris le premier modèle qui a convergé. Il aurait été intéressant de faire plusieurs essais pour
+chaque taille de modèle afin de pouvoir comparer les moyennes de ces échantillons au lieu d'un exemplaire seulement, notamment pour
 la performance du modèle à 50 couches qui est supérieurs à celui à 34 couches, mais inférieur à celui à 18 couches. Il est possible
 que ce résultat soit dû à un biais de sélection. Il aurait également été intéressant de tester les modèles avec plus d'époques, car
 il est possible que les modèles de plus grande taille convergent après plus d'époques. Cependant, il aurait fallu augmenter le nombre
 d'époques pour tous les modèles, car il est possible que les modèles de plus petite taille convergent plus rapidement que les modèles
 de plus grande taille. Il aurait également été intéressant de tester les modèles avec des hyper paramètres différents, car il est possible
 que les modèles de plus grande taille aient besoin d'hyper paramètres différents pour converger vers des meilleurs résultats. Cependant,
-avec la restriction de temps et de ressources informatique pour l'entraînement des modèles, il n'a pas été possible de tester ces
+avec la restriction de temps et de ressources informatiques pour l'entraînement des modèles, il n'a pas été possible de tester ces
 différentes approches. Les modèles ont été entraînés sur un ordinateur portable personnel avec une carte graphique NVIDIA GeForce RTX 2060.
-Aussi, l'ajout de la normalisation de lot a peut-être nui à la performance des modèles simples, puisque le modèle résiduel de l'article original
-l'utilisait sur les modèles résiduels à chaque bloc. Donc, nous avons laissé la normalisation de lot pour les modèles simple.
+Aussi, l'ajout de la normalisation de lots a peut-être nuit à la performance des modèles simples, puisque le modèle résiduel de l'article original
+l'utilisait sur les modèles résiduels à chaque bloc. Alors, nous avons laissé la normalisation de lots pour les modèles simples.
 Somme toute, les résultats obtenus sont intéressants, car ils montrent que les modèles résiduels sont plus performants que les modèles simples
 pour la classification d'images.
 
@@ -349,7 +349,7 @@ que les modèles de ResNet profonds ont atteint des performances de classificati
 simples sur le jeu de données CIFAR-10.
 Depuis leur introduction en 2016, les modèles ResNet ont été largement utilisés dans divers domaines, notamment
 la reconnaissance d'images, la segmentation d'images, la détection d'objets et la classification de textes.
-Les modèles utilisant ResNet pour différentes tâches: ResNeXt, Wide ResNet, YOLO, GANs, etc.
+Les modèles utilisant ResNet peuvent être utilisés pour les tâches tel que ResNeXt, Wide ResNet, YOLO, GANs, etc.
 
 \bibliographystyle{named}
 \bibliography{rapport}
